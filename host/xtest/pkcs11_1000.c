@@ -627,6 +627,7 @@ static CK_RV init_user_test_token(CK_SLOT_ID slot)
 	return rv;
 }
 
+#ifdef OPENSSL_FOUND
 static CK_RV test_already_initialized_token(ADBG_Case_t *c, CK_SLOT_ID slot)
 {
 	CK_RV rv = CKR_GENERAL_ERROR;
@@ -914,9 +915,11 @@ out:
 
 	return rv;
 }
+#endif /*OPENSSL_FOUND*/
 
 static void xtest_pkcs11_test_1003(ADBG_Case_t *c)
 {
+#ifdef OPENSSL_FOUND
 	CK_RV rv = CKR_GENERAL_ERROR;
 	CK_FUNCTION_LIST_PTR ckfunc_list = NULL;
 	CK_SLOT_ID slot = 0;
@@ -973,6 +976,11 @@ static void xtest_pkcs11_test_1003(ADBG_Case_t *c)
 out:
 	rv = close_lib();
 	ADBG_EXPECT_CK_OK(c, rv);
+#else /*!OPENSSL_FOUND*/
+	UNUSED(c);
+	/* xtest_uuid_v5() depends on OpenSSL */
+	Do_ADBG_Log("OpenSSL not available, skipping test 1003");
+#endif /*OPENSSL_FOUND*/
 }
 
 ADBG_CASE_DEFINE(pkcs11, 1003, xtest_pkcs11_test_1003,

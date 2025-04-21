@@ -39,27 +39,12 @@ endef
 # - User/group login tests 1027 and 1028
 WITH_OPENSSL ?= y
 ifeq ($(WITH_OPENSSL),y)
-CFLAGS += -DOPENSSL_FOUND=1
-ifneq ($(OPTEE_OPENSSL_EXPORT),)
+CFLAGS += -DOPENSSL_FOUND=1 -DOPENSSL_API_COMPAT=10100
+ifneq ($(OPENSSL_INSTALL_PATH),)
+#CFLAGS += -I$(OPENSSL_INSTALL_PATH)/include
+LDFLAGS += -L$(OPENSSL_INSTALL_PATH)/lib
+endif
 LDFLAGS += -lcrypto
-CFLAGS += -I$(OPTEE_OPENSSL_EXPORT)
-else #OPTEE_OPENSSL_EXPORT
-CFLAGS += -I../openssl/include
-ifeq ($(call cc-bits, $(call cc-arch, $(CC))),32)
-LDFLAGS += ../openssl/lib/arm/libcrypto.a -ldl
-else ifeq ($(call cc-bits, $(call cc-arch, $(CC))),64)
-LDFLAGS += ../openssl/lib/aarch64/libcrypto.a -ldl
-else
-MACH ?= rv64imac
-MABI ?= lp64
-CFLAGS += -march=$(MARCH) -mabi=$(MABI)
-ifeq ($(MABI),lp64)
-LDFLAGS += ../openssl/lib/rv64/libcrypto_softfloat.a -ldl
-else
-LDFLAGS += ../openssl/lib/rv64/libcrypto_doublefloat.a -ldl
-endif
-endif
-endif #OPTEE_OPENSSL_EXPORT
 endif #require OpenSSL
 
 srcs := regression_1000.c
