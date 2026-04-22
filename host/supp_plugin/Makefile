@@ -11,6 +11,11 @@ PLUGIN_LDFLAGS		= $(LDFLAGS) -shared
 
 CC			?= $(CROSS_COMPILE)gcc
 
+MARCH			?= rv64imac
+MABI			?= lp64
+CFLAGS			+= -march=$(MARCH) -mabi=$(MABI)
+LDFLAGS			+= -march=$(MARCH) -mabi=$(MABI)
+
 $(O)/supp_plugin/$(PLUGIN): $(PLUGIN_OBJ)
 	$(q)$(CC) $(PLUGIN_LDFLAGS) $(PLUGIN_OBJ) -o $@
 

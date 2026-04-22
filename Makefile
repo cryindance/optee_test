@@ -38,6 +38,7 @@ xtest:
 	$(q)$(MAKE) -C host/xtest CROSS_COMPILE="$(CROSS_COMPILE_HOST)" \
 			     --no-builtin-variables \
 			     O=$(out-dir) \
+			     MARCH=$(MARCH) MABI=$(MABI) \
 			     $@
 
 .PHONY: ta
@@ -49,7 +50,8 @@ ta:
 .PHONY: test_plugin
 test_plugin:
 	$(q)$(MAKE) -C host/supp_plugin CROSS_COMPILE="$(CROSS_COMPILE_HOST)" \
-			     O=$(out-dir)
+			     O=$(out-dir) \
+			     MARCH=$(MARCH) MABI=$(MABI)
 
 .PHONY: clean
 ifneq ($(wildcard $(TA_DEV_KIT_DIR)/host_include/conf.mk),)

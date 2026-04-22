@@ -16,6 +16,11 @@ include $(TA_DEV_KIT_DIR)/host_include/conf.mk
 OPTEE_CLIENT_EXPORT ?= ../../../optee_client/out/export
 
 CC		?= $(CROSS_COMPILE)gcc
+
+MARCH		?= rv64imac
+MABI		?= lp64
+CFLAGS		+= -march=$(MARCH) -mabi=$(MABI)
+LDFLAGS		+= -march=$(MARCH) -mabi=$(MABI)
 CPP		?= $(CROSS_COMPILE)cpp
 LD		?= $(CROSS_COMPILE)ld
 AR		?= $(CROSS_COMPILE)ar
@@ -41,10 +46,9 @@ WITH_OPENSSL ?= y
 ifeq ($(WITH_OPENSSL),y)
 CFLAGS += -DOPENSSL_FOUND=1 -DOPENSSL_API_COMPAT=10100
 ifneq ($(OPENSSL_INSTALL_PATH),)
-#CFLAGS += -I$(OPENSSL_INSTALL_PATH)/include
-LDFLAGS += -L$(OPENSSL_INSTALL_PATH)/lib
+	CFLAGS += -I$(OPENSSL_INSTALL_PATH)/include
 endif
-LDFLAGS += -lcrypto
+LDFLAGS += $(OPENSSL_INSTALL_PATH)/lib/libcrypto.a
 endif #require OpenSSL
 
 srcs := regression_1000.c
